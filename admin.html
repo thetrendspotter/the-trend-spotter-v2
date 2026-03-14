@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trend Spotter | Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #0f172a; color: white; }
+        .card { background: #1e293b; border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+    </style>
+</head>
+<body class="p-8">
+
+    <div class="max-w-4xl mx-auto">
+        <header class="flex justify-between items-center mb-8 border-b border-gray-700 pb-4">
+            <h1 class="text-3xl font-bold text-orange-500">Trend Spotter Admin</h1>
+            <span class="bg-green-500 text-xs px-2 py-1 rounded">Backend Live</span>
+        </header>
+
+        <section class="card">
+            <h2 class="text-xl font-semibold mb-4 text-gray-300">Add Viral Product</h2>
+            <div class="grid grid-cols-1 gap-4">
+                <input id="p_name" type="text" placeholder="Product Name" class="p-2 rounded bg-gray-800 border border-gray-600">
+                <textarea id="p_desc" placeholder="Viral Description for AI Voiceover..." class="p-2 rounded bg-gray-800 border border-gray-600 h-24"></textarea>
+                <button onclick="generateVoice()" class="bg-orange-600 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded transition">
+                    🎙️ Generate AI Voiceover (ElevenLabs)
+                </button>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2 class="text-xl font-semibold mb-4 text-gray-300">System Status</h2>
+            <div id="status_box" class="text-sm text-gray-400 italic">
+                Waiting for action...
+            </div>
+        </section>
+    </div>
+
+    <script>
+        async function generateVoice() {
+            const desc = document.getElementById('p_desc').value;
+            const statusBox = document.getElementById('status_box');
+            
+            if (!desc) {
+                alert("Please enter a description first!");
+                return;
+            }
+
+            statusBox.innerHTML = "⏳ Connecting to ElevenLabs via Backend...";
+
+            try {
+                // Ye aapke naye backend route ko call karega
+                const response = await fetch('/api/check-key');
+                const data = await response.json();
+                
+                if (data.status === "Connected") {
+                    statusBox.innerHTML = "✅ ElevenLabs Connected! Voice generating...";
+                    // Yahan hum voice generation ka final logic baad mein add karenge
+                } else {
+                    statusBox.innerHTML = "❌ Error: " + data.message;
+                }
+            } catch (error) {
+                statusBox.innerHTML = "❌ Connection Failed. Make sure Backend is deployed.";
+            }
+        }
+    </script>
+</body>
+</html>
+
